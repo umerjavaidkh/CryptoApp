@@ -3,32 +3,32 @@ part of 'crypto_bloc.dart';
 enum CryptoStatus { initial, loading, loaded, error }
 
 class CryptoState extends Equatable {
-  final List<Coin> coins;
+  final Coin coin;
   final CryptoStatus status;
   final Failure failure;
 
   const CryptoState({
-    required this.coins,
+    required this.coin,
     required this.status,
     required this.failure,
   });
 
   factory CryptoState.initial() => const CryptoState(
-        coins: [],
+        coin:  Coin(dateTime: "", chartName: "chartName", code: "USD", symbol: "", rate: "", description: "description", rate_float: 0.0),
         status: CryptoStatus.initial,
         failure: Failure(),
       );
 
   @override
-  List<Object> get props => [coins, status, failure];
+  List<Object> get props => [coin, status, failure];
 
   CryptoState copyWith({
-    List<Coin>? coins,
+    Coin? coins,
     CryptoStatus? status,
     Failure? failure,
   }) {
     return CryptoState(
-      coins: coins ?? this.coins,
+      coin: coin,
       status: status ?? this.status,
       failure: failure ?? this.failure,
     );
