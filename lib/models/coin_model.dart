@@ -48,12 +48,12 @@ class Coin extends Equatable {
 
   Map<String,dynamic> toJson() =>
       {
-      "dateTime": this.dateTime ?? '',
-      "chartName": this.chartName ?? '',
-      "code": this.code ?? '',
-      "symbol": this.symbol?? '',
-      "rate":this.rate ?? '',
-      "description": this.description ?? '',
+      "dateTime": this.dateTime,
+      "chartName": this.chartName,
+      "code": this.code,
+      "symbol": this.symbol,
+      "rate":this.rate,
+      "description": this.description,
       "rate_float": this.rate_float,
 
   };

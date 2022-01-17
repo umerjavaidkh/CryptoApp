@@ -35,11 +35,11 @@ dependencies:
   syncfusion_flutter_charts: ^19.4.42
   data_connection_checker_tv: ^0.3.5-nullsafety
   # Local cache
-  shared_preferences: ^2.0.7
+  shared_preferences: ^2.0.0
   # Service locator
   get_it: ^6.1.0
   fluttertoast: ^8.0.8
-  flutter_secure_storage: ^5.0.2
+
 
 dev_dependencies:
   flutter_test:

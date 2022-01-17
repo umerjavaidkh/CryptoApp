@@ -7,7 +7,6 @@ import 'package:cryptotracker/repositories/crypto_repository_imp.dart';
 import 'package:data_connection_checker_tv/data_connection_checker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -16,7 +15,8 @@ import 'models/coin_model.dart';
 import 'injection_container.dart' ;
 import 'package:http/http.dart' as http;
 
-final storage =  FlutterSecureStorage();
+
+
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -102,23 +102,26 @@ Future<void> onStart() async{
   });
 
 
+  final sharedPreferences =await  SharedPreferences.getInstance();
 
 
-     final  cryptoRepositoryServiceObject = CryptoRepositoryImp(
-      localDataSource: LocalDataSourceImpl(sharedPreferences: null,flutterSecureStorage: storage),
+  final  cryptoRepositoryServiceObject = CryptoRepositoryImp(
+      localDataSource: LocalDataSourceImpl(sharedPreferences: sharedPreferences),
       remoteDataSource: RemoteDataSourceImpl(client: http.Client()),
       networkInfo: NetworkInfoImpl(DataConnectionChecker())
   );
+
 
   // bring to foreground
   service.setForegroundMode(true);
   Timer.periodic(Duration(seconds: 3), (timer) async {
     if (!(await service.isServiceRunning())) timer.cancel();
 
+
     var result = await cryptoRepositoryServiceObject.getCoinDesk();
 
     print(result.toString());
-    //await sharedPreferences.reload();
+    await sharedPreferences.reload();
     var tempMinLimit =await cryptoRepositoryServiceObject.getMinRateLimit();
     var tempMaxLimit =await cryptoRepositoryServiceObject.getMaxRateLimit();
 
@@ -149,12 +152,12 @@ Future<void> onStart() async{
 
     service.sendData(
       {
-        "dateTime": result.dateTime ?? '',
-        "chartName": result.chartName ?? '',
-        "code": result.code ?? '',
-        "symbol": result.symbol?? '',
-        "rate":result.rate ?? '',
-        "description": result.description ?? '',
+        "dateTime": result.dateTime,
+        "chartName": result.chartName,
+        "code": result.code,
+        "symbol": result.symbol,
+        "rate":result.rate,
+        "description": result.description,
         "rate_float": result.rate_float,
       },
     );
@@ -396,7 +399,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         Center(
                           child: Column(children: [
                             Text(
-                              coinData?.rate??"",
+                              coinData.rate,
                               style: TextStyle(
                                   fontFamily: "SFProDisplay",
                                   fontSize: 24,

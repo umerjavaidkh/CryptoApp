@@ -1,6 +1,5 @@
 import 'package:cryptotracker/repositories/crypto_repository.dart';
 import 'package:data_connection_checker_tv/data_connection_checker.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,7 +19,7 @@ Future<void> init() async {
 
 
   cryptoRepository = CryptoRepositoryImp(
-      localDataSource: LocalDataSourceImpl(sharedPreferences: sharedPreferences,flutterSecureStorage: storage),
+      localDataSource: LocalDataSourceImpl(sharedPreferences: sharedPreferences),
       remoteDataSource: RemoteDataSourceImpl(client: http.Client()),
       networkInfo: NetworkInfoImpl(DataConnectionChecker())
   );
