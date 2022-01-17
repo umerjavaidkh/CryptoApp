@@ -4,7 +4,6 @@ import 'package:cryptotracker/data/remote_data_source.dart';
 import 'package:cryptotracker/models/coin_model.dart';
 import 'package:cryptotracker/models/failure_model.dart';
 import 'package:cryptotracker/network/network_info.dart';
-import 'package:http/http.dart' as http;
 import 'crypto_repository.dart';
 
 class CryptoRepositoryImp implements CryptoRepository {
@@ -23,16 +22,16 @@ class CryptoRepositoryImp implements CryptoRepository {
   Future<Coin> getCoinDesk() async {
     if (await networkInfo.isConnected) {
       try {
-        final remoteTrivia = await remoteDataSource.getRemoteBitCoinData();
-        localDataSource.cachedBitCoinData(remoteTrivia);
-        return remoteTrivia;
+        final remoteCoin= await remoteDataSource.getRemoteBitCoinData();
+        localDataSource.cachedBitCoinData(remoteCoin);
+        return remoteCoin;
       } catch (err) {
         throw Failure(message: err.toString());
       }
     } else {
       try {
-        final localTrivia = await localDataSource.getCachedBitCoinData();
-        return localTrivia;
+        final localCoin = await localDataSource.getCachedBitCoinData();
+        return localCoin;
       } catch (err) {
         throw Failure(message: err.toString());
       }
