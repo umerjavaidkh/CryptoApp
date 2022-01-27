@@ -8,14 +8,19 @@ abstract class LocalDataSource {
   Future<void> cachedBitCoinData(Coin coinToCache);
   Future<void> saveMinRateLimit(double minRateToCache);
   Future<void> saveMaxRateLimit(double minRateToCache);
+  Future<void> setAppStatus(bool isForeground);
+  Future<bool> getAppStatus();
   Future<double> getMaxRateLimit();
   Future<double> getMinRateLimit();
-
+  void refresh();
 }
 
 const CACHED_BITCOIN= 'CACHED_BITCOIN';
 const CACHED_MIN_LIMIT_BITCOIN= 'MIN_LIMIT_CACHED_BITCOIN';
 const CACHED_MAX_LIMIT_BITCOIN= 'MAX_LIMIT_CACHED_BITCOIN';
+
+const CACHED_APP_STATUS= 'CACHED_APP_STATUS';
+
 const double MIN_LIMIT_RARE_DEFAULT = 43200.1255;
 const double MAX_LIMIT_RATE_DEFAULT = 43500.3422;
 
@@ -36,6 +41,7 @@ class LocalDataSourceImpl implements LocalDataSource {
 
 
   }
+
 
   @override
   Future<void> cachedBitCoinData(Coin coinToCache) async{
@@ -89,5 +95,23 @@ class LocalDataSourceImpl implements LocalDataSource {
       );
 
 
+  }
+
+  @override
+  void refresh() {
+    sharedPreferences.reload();
+  }
+
+  @override
+  Future<bool> getAppStatus() async{
+    return sharedPreferences.getBool(CACHED_APP_STATUS)??false;
+  }
+
+  @override
+  Future<void> setAppStatus(bool isForeground) async{
+    sharedPreferences.setBool(
+      CACHED_APP_STATUS,
+      isForeground,
+    );
   }
 }

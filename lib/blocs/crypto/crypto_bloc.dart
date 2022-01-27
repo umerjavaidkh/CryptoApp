@@ -10,39 +10,45 @@ part 'crypto_event.dart';
 part 'crypto_state.dart';
 
 class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
-  final CryptoRepository _cryptoRepository;
 
-  CryptoBloc({required CryptoRepository cryptoRepository})
-      : _cryptoRepository = cryptoRepository,
-        super(CryptoState.initial());
+  late final CryptoRepository _cryptoRepository;
+
+  CryptoBloc({required CryptoRepository cryptoRepository,required CryptoState initialState}) : super(initialState){
+
+    _cryptoRepository = cryptoRepository;
+  }
+
 
   @override
   Stream<CryptoState> mapEventToState(
     CryptoEvent event,
   ) async* {
+
     if (event is AppStarted) {
-      yield* _mapAppStartedToState();
+
+      try {
+
+        final coin = await _cryptoRepository.getCoinDesk();
+        var result = CryptoStateLoaded(coin);
+        yield result;
+      } on Failure catch (err) {
+        yield CryptoStateError(err.message);
+      }
+
     } else if (event is RefreshCoins) {
-      yield* _getCoinDesk();
+
+      try {
+
+        final coin = await _cryptoRepository.getCoinDesk();
+        var result = CryptoStateLoaded(coin);
+        yield result;
+      } on Failure catch (err) {
+        yield CryptoStateError(err.message);
+      }
     }
   }
 
-  Stream<CryptoState> _getCoinDesk( ) async* {
-    try {
-      final coin = await _cryptoRepository.getCoinDesk();
-      yield state.copyWith(coins: coin, status: CryptoStatus.loaded);
-    } on Failure catch (err) {
-      yield state.copyWith(
-        failure: err,
-        status: CryptoStatus.error,
-      );
-    }
-  }
 
-  Stream<CryptoState> _mapAppStartedToState() async* {
-    yield state.copyWith(status: CryptoStatus.loading);
-    yield* _getCoinDesk();
-  }
 
 
 }

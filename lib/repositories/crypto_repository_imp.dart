@@ -20,22 +20,14 @@ class CryptoRepositoryImp implements CryptoRepository {
 
   @override
   Future<Coin> getCoinDesk() async {
-    if (await networkInfo.isConnected) {
-      try {
-        final remoteCoin= await remoteDataSource.getRemoteBitCoinData();
-        localDataSource.cachedBitCoinData(remoteCoin);
-        return remoteCoin;
-      } catch (err) {
-        throw Failure(message: err.toString());
-      }
-    } else {
+
       try {
         final localCoin = await localDataSource.getCachedBitCoinData();
         return localCoin;
       } catch (err) {
         throw Failure(message: err.toString());
       }
-    }
+
   }
 
 
@@ -59,6 +51,16 @@ class CryptoRepositoryImp implements CryptoRepository {
   @override
   Future<void> saveMinRateLimit(double minRateToCache) async {
     localDataSource.saveMinRateLimit(minRateToCache);
+  }
+
+  @override
+  Future<bool> getAppStatus() async{
+    return localDataSource.getAppStatus();
+  }
+
+  @override
+  Future<void> setAppStatus(bool isAppForeground) async{
+   localDataSource.setAppStatus(isAppForeground);
   }
 
 

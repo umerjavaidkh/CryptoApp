@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 
 class Coin extends Equatable {
   final String dateTime;
+  final int localTimeStamp;
   final String chartName;
   final String code;
   final String symbol;
@@ -11,6 +12,7 @@ class Coin extends Equatable {
 
   const Coin({
     required this.dateTime,
+    required this.localTimeStamp,
     required this.chartName,
     required this.code,
     required this.symbol,
@@ -20,11 +22,12 @@ class Coin extends Equatable {
   });
 
   @override
-  List<Object?> get props => [dateTime, chartName, code,symbol,rate,description,rate_float];
+  List<Object?> get props => [dateTime, chartName,localTimeStamp, code,symbol,rate,description,rate_float];
 
   factory Coin.fromJson(Map<String, dynamic> map) {
     return Coin(
       dateTime: map['time']?['updated'] ?? '',
+      localTimeStamp: DateTime.now().millisecondsSinceEpoch,
       chartName: map['chartName'] ?? '',
       code: map['bpi']?['USD']?['code'] ?? '',
       symbol: map['bpi']?['USD']?['symbol'] ?? '',
@@ -37,6 +40,7 @@ class Coin extends Equatable {
   factory Coin.fromMap(Map<String, dynamic> map) {
     return Coin(
       dateTime: map['dateTime']?? '',
+      localTimeStamp: DateTime.now().millisecondsSinceEpoch,
       chartName: map['chartName'] ?? '',
       code: map['code'] ?? '',
       symbol: map['symbol'] ?? '',
@@ -50,6 +54,7 @@ class Coin extends Equatable {
       {
       "dateTime": this.dateTime,
       "chartName": this.chartName,
+       "localTimeStamp":0,
       "code": this.code,
       "symbol": this.symbol,
       "rate":this.rate,

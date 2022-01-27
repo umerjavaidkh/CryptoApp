@@ -39,6 +39,10 @@ dependencies:
   # Service locator
   get_it: ^6.1.0
   fluttertoast: ^8.0.8
+  fl_chart: ^0.36.1
+  awesome_notifications: ^0.6.21
+  workmanager: ^0.4.1
+
 
 
 dev_dependencies:

@@ -1,6 +1,6 @@
 part of 'crypto_bloc.dart';
 
-enum CryptoStatus { initial, loading, loaded, error }
+/*enum CryptoStatus { initial, loading, loaded, error }
 
 class CryptoState extends Equatable {
   final Coin coin;
@@ -33,4 +33,35 @@ class CryptoState extends Equatable {
       failure: failure ?? this.failure,
     );
   }
+}*/
+
+
+abstract class CryptoState extends Equatable {
+  const CryptoState();
+}
+
+class CryptoStateInitial extends CryptoState {
+  const CryptoStateInitial();
+  @override
+  List<Object> get props => [];
+}
+
+class CryptoStateLoading extends CryptoState {
+  const CryptoStateLoading();
+  @override
+  List<Object> get props => [];
+}
+
+class CryptoStateLoaded extends CryptoState {
+  final Coin coin;
+  CryptoStateLoaded(this.coin);
+  @override
+  List<Object> get props => [coin];
+}
+
+class CryptoStateError extends CryptoState {
+  final String message;
+  const CryptoStateError(this.message);
+  @override
+  List<Object> get props => [message];
 }

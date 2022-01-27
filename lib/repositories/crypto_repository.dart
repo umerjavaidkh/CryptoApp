@@ -13,6 +13,11 @@ abstract class CryptoRepository{
   Future<double> getMinRateLimit();
 
   @override
+  Future<void> setAppStatus(bool isAppForeground);
+
+  Future<bool> getAppStatus();
+
+  @override
   Future<void> saveMaxRateLimit(double maxRateToCache);
 
   @override

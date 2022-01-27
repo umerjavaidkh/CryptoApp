@@ -9,26 +9,16 @@ import 'main.dart';
 import 'network/network_info.dart';
 import 'repositories/crypto_repository_imp.dart';
 
-GetIt getIt = GetIt.I;
-
-late final CryptoRepository cryptoRepository ;
-
-Future<void> init() async {
-
- final sharedPreferences = await SharedPreferences.getInstance();
+GetIt getIt = GetIt.instance;
 
 
-  cryptoRepository = CryptoRepositoryImp(
-      localDataSource: LocalDataSourceImpl(sharedPreferences: sharedPreferences),
-      remoteDataSource: RemoteDataSourceImpl(client: http.Client()),
-      networkInfo: NetworkInfoImpl(DataConnectionChecker())
-  );
 
+Future<void> init(SharedPreferences sharedPreferences) async {
 
-  /*getIt.registerFactory<CryptoRepository>(() => CryptoRepositoryImp(
-    localDataSource: getIt.get<LocalDataSource>(),
-    remoteDataSource: getIt.get<RemoteDataSource>(),
-    networkInfo: getIt.get<NetworkInfo>()
+  getIt.registerLazySingleton<CryptoRepository>(() => CryptoRepositoryImp(
+    localDataSource: getIt(),
+    remoteDataSource: getIt(),
+    networkInfo: getIt()
   ));
 
 
@@ -46,7 +36,7 @@ Future<void> init() async {
 
   getIt.registerLazySingleton(() => sharedPreferences);
   getIt.registerLazySingleton(() => http.Client());
-  getIt.registerLazySingleton(() => DataConnectionChecker());*/
+  getIt.registerLazySingleton(() => DataConnectionChecker());
 
 
 }
