@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:isolate';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:cryptotracker/blocs/crypto/crypto_bloc.dart';
@@ -121,22 +122,48 @@ void fetchData(String _baseUrl, http.Client client,
     final response = await client.get(Uri.parse(requestUrl));
     if (response.statusCode == 200) {
       Map<String, dynamic> data = await json.decode(response.body);
-      Future.delayed(const Duration(milliseconds: 1000), () async{
-        SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-        sharedPreferences.toString();
-      });
       var result = Coin.fromJson(data);
-      service.sendData(
-        {
-          "dateTime": result.dateTime,
-          "chartName": result.chartName,
-          "code": result.code,
-          "symbol": result.symbol,
-          "rate": result.rate,
-          "description": result.description,
-          "rate_float": result.rate_float,
-        },
-      );
+
+      if(Platform.isAndroid){
+        SharedPreferences offLine =await  SharedPreferences.getInstance();
+        offLine.reload();
+        bool isAppForeground = await offLine.getBool(CACHED_APP_STATUS)??false;
+        if(!isAppForeground){
+          var currentValue = result.rate_float;
+          var minLimit = await offLine.getDouble(CACHED_MIN_LIMIT_BITCOIN)??0.0;
+          var maxLimit = await offLine.getDouble(CACHED_MAX_LIMIT_BITCOIN)??0.0;
+          if(currentValue<=minLimit){
+            notifyUser("Min Limit Reached","Min limit of ${currentValue} USD is reached you can buy or sell your coin");
+          }
+          if(currentValue>=maxLimit){
+            notifyUser("Max Limit Reached","Max limit of ${currentValue} USD is reached you can buy or sell your coin");
+          }
+      }else
+          service.sendData(
+              {
+                "dateTime": result.dateTime,
+                "chartName": result.chartName,
+                "code": result.code,
+                "symbol": result.symbol,
+                "rate": result.rate,
+                "description": result.description,
+                "rate_float": result.rate_float,
+              } );
+
+      }else{
+
+        service.sendData(
+            {
+              "dateTime": result.dateTime,
+              "chartName": result.chartName,
+              "code": result.code,
+              "symbol": result.symbol,
+              "rate": result.rate,
+              "description": result.description,
+              "rate_float": result.rate_float,
+            } );
+
+       }
 
     }
   } catch (err) {
@@ -144,6 +171,27 @@ void fetchData(String _baseUrl, http.Client client,
   }
 
 
+
+}
+
+void notifyUser(String title, String description){
+
+  AwesomeNotifications().createNotification(
+      content: NotificationContent(
+          id: 10,
+          displayOnForeground: true,
+          channelKey: 'basic_channel',
+          title: title,
+          body: description,
+          payload: {'uuid': 'user-profile-uuid'}),
+      actionButtons: [
+
+        NotificationActionButton(
+            key: 'PROFILE',
+            label: 'View Details',
+            enabled: true,
+            buttonType: ActionButtonType.Default)
+      ]);
 }
 
 

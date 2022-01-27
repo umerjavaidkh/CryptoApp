@@ -103,7 +103,7 @@ class HomePageFormState extends State<HomePageForm>{
                     keyboardType: TextInputType.numberWithOptions(
                         signed: true, decimal: true),
                     style: TextStyle(
-                        fontWeight: FontWeight.w600, fontSize: 24),
+                        fontWeight: FontWeight.w600, fontSize: 18,color: Colors.lightGreen),
                     textInputAction: TextInputAction.done,
                     maxLength: 12,
                     inputFormatters: [],
@@ -191,7 +191,7 @@ class HomePageFormState extends State<HomePageForm>{
                     keyboardType: TextInputType.numberWithOptions(
                         signed: true, decimal: true),
                     style: TextStyle(
-                        fontWeight: FontWeight.w600, fontSize: 24),
+                        fontWeight: FontWeight.w600, fontSize: 18,color: Colors.lightGreen),
                     textInputAction: TextInputAction.done,
                     maxLength: 12,
                     inputFormatters: [],

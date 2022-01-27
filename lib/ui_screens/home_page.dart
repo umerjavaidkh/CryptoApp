@@ -110,8 +110,8 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver{
                 margin: EdgeInsets.only(left: 30, right: 30),
                 child: Center(child: BlocBuilder<CryptoBloc, CryptoState>(
                   builder: (context, state) {
-                    //initial, loading, loaded, error
-                    print(state.toString());
+
+
                     if (state is CryptoStateLoading) {
                       return CircularProgressIndicator();
                     } else if (state is CryptoStateLoaded) {
@@ -133,16 +133,21 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver{
 
                         SizedBox(height: 6,),
 
-                        Text(
-                          "Current Value ${state.coin.rate_float}",
-                          style: TextStyle(
-                              color: Colors.cyanAccent,
-                              fontFamily: "SFProDisplay",
-                              fontSize: 18,
-                              fontStyle: FontStyle.normal,
-                              fontWeight: FontWeight.w600),
-                          textAlign: TextAlign.center,
-                        )
+                            FutureBuilder<String>(
+                              future: getCurrentRateText(currentValue : state.coin.rate_float, cryptoRepository: getIt.get<CryptoRepository>()), // a Future<String> or null
+                              builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                                return Text(
+                                    snapshot.data??"",
+                                  style: TextStyle(
+                                      color: Colors.cyanAccent,
+                                      fontFamily: "SFProDisplay",
+                                      fontSize: 18,
+                                      fontStyle: FontStyle.normal,
+                                      fontWeight: FontWeight.w600),
+                                  textAlign: TextAlign.center,
+                                );
+                              },
+                            )
 
                       ],),);
                     } else if (state is CryptoStateError) {
@@ -168,6 +173,22 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver{
         resizeToAvoidBottomInset: false,
       ),
     );
+  }
+
+
+  Future<String> getCurrentRateText({required  double currentValue,required CryptoRepository cryptoRepository})async{
+
+    var minLimit = await cryptoRepository.getMinRateLimit();
+    var maxLimit = await cryptoRepository.getMaxRateLimit();
+
+    String toReturn = "Current rate = $currentValue";
+    if(currentValue<=minLimit){
+       toReturn="Min Limit Reached = $currentValue";
+    }
+    if(currentValue>=maxLimit){
+      toReturn="Max Limit Reached = $currentValue";
+    }
+     return toReturn;
   }
 }
 
