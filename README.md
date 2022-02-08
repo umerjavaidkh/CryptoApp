@@ -1,4 +1,4 @@
-# NYTimes
+# CryptoApp
 
 A simple app to shows BitCoin real time rate. App built with Bloc architecture using  GetIt, Dart, Providers, ChartsLib Debugging, Realtime.
 
